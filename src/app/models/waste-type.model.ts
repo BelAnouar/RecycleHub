@@ -1,0 +1,1 @@
+export type WasteType = 'plastic' | 'glass' | 'paper' | 'metal';

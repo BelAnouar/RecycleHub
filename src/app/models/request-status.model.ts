@@ -1,0 +1,1 @@
+export type RequestStatus = 'pending' | 'occupied' | 'in-progress' | 'validated' | 'rejected';

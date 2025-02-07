@@ -1,0 +1,89 @@
+<div class="bg-white shadow sm:rounded-lg">
+    <div class="px-4 py-5 sm:p-6">
+      <h3 class="text-lg leading-6 font-medium text-gray-900">Create a New Collection Request</h3>
+      <div class="mt-5">
+        <form [formGroup]="requestForm" (ngSubmit)="onSubmit()">
+          <div class="space-y-6">
+            <!-- Waste Types -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700">Waste Types</label>
+              <div class="mt-1 space-y-2">
+                <div *ngFor="let type of wasteTypes" class="flex items-center">
+                  <input type="checkbox" [value]="type" (change)="onWasteTypeChange($event)" class="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded">
+                  <label class="ml-2 block text-sm text-gray-900 capitalize">{{ type }}</label>
+                </div>
+              </div>
+              <div *ngIf="requestForm.get('wasteTypes')?.invalid && (requestForm.get('wasteTypes')?.touched || requestForm.get('wasteTypes')?.dirty)" class="text-red-500 text-sm mt-1">
+                Please select at least one waste type.
+              </div>
+            </div>
+  
+            <!-- Weight -->
+            <div>
+              <label for="weight" class="block text-sm font-medium text-gray-700">Estimated Weight (in grams)</label>
+              <div class="mt-1">
+                <input type="number" id="weight" formControlName="weight" class="shadow-sm focus:ring-green-500 focus:border-green-500 block w-full sm:text-sm border-gray-300 rounded-md">
+              </div>
+              <div *ngIf="requestForm.get('weight')?.invalid && (requestForm.get('weight')?.touched || requestForm.get('weight')?.dirty)" class="text-red-500 text-sm mt-1">
+                <div *ngIf="requestForm.get('weight')?.errors?.['required']">Weight is required.</div>
+                <div *ngIf="requestForm.get('weight')?.errors?.['min']">Weight must be at least 1000 grams.</div>
+              </div>
+            </div>
+  
+            <!-- Address -->
+            <div>
+              <label for="address" class="block text-sm font-medium text-gray-700">Collection Address</label>
+              <div class="mt-1">
+                <input type="text" id="address" formControlName="address" class="shadow-sm focus:ring-green-500 focus:border-green-500 block w-full sm:text-sm border-gray-300 rounded-md">
+              </div>
+              <div *ngIf="requestForm.get('address')?.invalid && (requestForm.get('address')?.touched || requestForm.get('address')?.dirty)" class="text-red-500 text-sm mt-1">
+                Address is required.
+              </div>
+            </div>
+  
+            <!-- Date -->
+            <div>
+              <label for="date" class="block text-sm font-medium text-gray-700">Preferred Date</label>
+              <div class="mt-1">
+                <input type="date" id="date" formControlName="date" class="shadow-sm focus:ring-green-500 focus:border-green-500 block w-full sm:text-sm border-gray-300 rounded-md">
+              </div>
+              <div *ngIf="requestForm.get('date')?.invalid && (requestForm.get('date')?.touched || requestForm.get('date')?.dirty)" class="text-red-500 text-sm mt-1">
+                Date is required.
+              </div>
+            </div>
+  
+            <!-- Time Slot -->
+            <div>
+              <label for="timeSlot" class="block text-sm font-medium text-gray-700">Preferred Time Slot</label>
+              <div class="mt-1">
+                <select id="timeSlot" formControlName="timeSlot" class="shadow-sm focus:ring-green-500 focus:border-green-500 block w-full sm:text-sm border-gray-300 rounded-md">
+                  <option value="">Select a time slot</option>
+                  <option value="09:00-12:00">09:00 - 12:00</option>
+                  <option value="12:00-15:00">12:00 - 15:00</option>
+                  <option value="15:00-18:00">15:00 - 18:00</option>
+                </select>
+              </div>
+              <div *ngIf="requestForm.get('timeSlot')?.invalid && (requestForm.get('timeSlot')?.touched || requestForm.get('timeSlot')?.dirty)" class="text-red-500 text-sm mt-1">
+                Time slot is required.
+              </div>
+            </div>
+  
+            <!-- Notes -->
+            <div>
+              <label for="notes" class="block text-sm font-medium text-gray-700">Additional Notes</label>
+              <div class="mt-1">
+                <textarea id="notes" formControlName="notes" rows="3" class="shadow-sm focus:ring-green-500 focus:border-green-500 block w-full sm:text-sm border-gray-300 rounded-md"></textarea>
+              </div>
+            </div>
+  
+            <!-- Submit Button -->
+            <div>
+              <button type="submit" [disabled]="!requestForm.valid" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                Submit Request
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
