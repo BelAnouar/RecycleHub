@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
-import { delay } from 'rxjs/operators';
+import { Observable, of, from } from 'rxjs';
+import { delay, map } from 'rxjs/operators';
 import { CollectionRequest } from '../models/collection-request.model';
 import { RequestStatus } from '../models/request-status.model';
+import { IndexDBService } from './indexdb.service';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +12,7 @@ export class DashboardService {
   private collectionRequests: CollectionRequest[] = [];
   private userPoints: number = 0;
 
-  constructor() {}
+  constructor(private indexDBService: IndexDBService) {}
 
   getCollectionRequests(): Observable<CollectionRequest[]> {
     return of(this.collectionRequests).pipe(delay(500));
@@ -30,6 +31,28 @@ export class DashboardService {
     return of(newRequest).pipe(delay(500));
   }
 
+  getAllCollectionRequests(): Observable<CollectionRequest[]> {
+    return from(this.indexDBService.getAllCollections()).pipe(
+      map((requests: any[]) => requests.map(request => ({
+        ...request,
+        wasteTypes: request.wasteTypes || [],
+        address: request.address || '',
+        date: request.date || new Date(),
+        timeSlot: request.timeSlot || ''
+      } as CollectionRequest)))
+    );
+  }
+  getCollectionRequestsByUser(userId: number): Observable<CollectionRequest[]> {
+    return from(this.indexDBService.getCollectionsByUser(userId)).pipe(
+      map((requests: any[]) => requests.map(request => ({
+        ...request,
+        wasteTypes: request.wasteTypes || [],
+        address: request.address || '',
+        date: request.date || new Date(),
+        timeSlot: request.timeSlot || ''
+      } as CollectionRequest)))
+    );
+  }
   cancelCollectionRequest(requestId: number): Observable<void> {
     this.collectionRequests = this.collectionRequests.filter(request => request.id !== requestId);
     return of(void 0).pipe(delay(500));
@@ -39,8 +62,9 @@ export class DashboardService {
     return of(this.userPoints).pipe(delay(500));
   }
 
-  convertPoints(points: number): Observable<number> {
-    if (points > this.userPoints) {
+  convertPoints(points: number,userPoints:number): Observable<number> {
+   
+    if (points > userPoints) {
       throw new Error('Insufficient points');
     }
     this.userPoints -= points;

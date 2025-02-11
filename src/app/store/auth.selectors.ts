@@ -23,3 +23,7 @@ export const selectAuthError = createSelector(
 
 
 export const selectIsAuthenticated = createSelector(selectAuthState, (state: fromAuth.State) => state.isAuthenticated)
+export const selectUserProfile = createSelector(
+    selectAuthState,
+    (state: fromAuth.State) => state.user
+  );

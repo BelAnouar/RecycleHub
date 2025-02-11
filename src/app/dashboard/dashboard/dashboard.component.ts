@@ -3,6 +3,8 @@ import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { User } from '../../models/user.model';
 import { AppState } from '../../store';
+import { UserService } from '../../services/user.service';
+import { logout } from '../../store/auth.actions';
 
 @Component({
   selector: 'app-dashboard',
@@ -12,11 +14,15 @@ import { AppState } from '../../store';
 export class DashboardComponent implements OnInit {
   user$: Observable<User | null>
 
-  constructor(private store: Store<AppState>) {
+  constructor(private store: Store<AppState>,private userService: UserService) {
     this.user$ = this.store.select((state) => state.auth.user)
   }
 
   ngOnInit(): void {
-    // Additional initialization logic if needed
+    
+  }
+
+  logout(): void {
+    this.store.dispatch(logout());
   }
 }

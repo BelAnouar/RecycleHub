@@ -1,5 +1,6 @@
 import { createAction, props } from "@ngrx/store"
 import { User } from "../models/user.model";
+import e from "express";
 
 export const login = createAction("[Auth] Login", props<{ email: string; password: string }>())
 
@@ -39,3 +40,31 @@ export const updateUserProfile = createAction(
     '[Auth] Delete User Account Failure',
     props<{ error: any }>()
   );
+
+
+  export const loadUserProfileInformation = createAction('[Auth] Load User Profile Information');
+  export const loadUserProfileInformationSuccess = createAction('[Auth] Load User Profile Information Success', props<{ user: User }>());
+    export const loadUserProfileInformationFailure = createAction(
+        '[Auth] Load User Profile Information Failure',
+        props<{ error: any }>()
+    );
+
+
+    export const updateUserPoints = createAction(
+
+        '[User] Update Points',
+      
+        props<{ userId: number; points: number }>()
+      
+      );
+      
+
+      export const updateUserPointsSuccess = createAction(
+        '[User] Update Points Success',
+        props<{ user: any }>()
+      );
+      
+      export const updateUserPointsFailure = createAction(
+        '[User] Update Points Failure',
+        props<{ error: any }>()
+      );

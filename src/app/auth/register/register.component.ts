@@ -4,6 +4,7 @@ import { Store} from "@ngrx/store";
 import * as AuthActions from "../../store/auth.actions"
 import {Observable} from "rxjs";
 import type { State } from "../../store/auth.reducer"
+import { ToastrService } from 'ngx-toastr';
 @Component({
   selector: 'app-register',
   templateUrl: './register.component.html',
@@ -18,6 +19,7 @@ export class RegisterComponent  {
   constructor(
     private fb: FormBuilder,
     private store: Store<{ auth: State }>,
+    private toastr: ToastrService 
   ) {
     this.loading$ = this.store.select((state) => state.auth.loading)
     this.error$ = this.store.select((state) => state.auth.error)
@@ -30,8 +32,12 @@ export class RegisterComponent  {
 
   onSubmit(): void {
     if (this.registerForm.valid) {
-      this.store.dispatch(AuthActions.register(this.registerForm.value))
+      this.store.dispatch(AuthActions.register(this.registerForm.value));
+   
+      this.toastr.success('Registration successful!', 'Success');
+      this.registerForm.reset();
     }
+  
   }
 
   togglePasswordVisibility(): void {

@@ -1,9 +1,9 @@
 <div class="min-h-screen flex">
-  <!-- Left side with illustration -->
+
   <div class="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-green-50 to-green-100 items-center justify-center p-12">
       </div>
 
-  <!-- Right side with login form -->
+
   <div class="w-full lg:w-1/2 flex items-center justify-center p-8">
     <div class="w-full max-w-md">
       <div class="flex justify-between items-center mb-8">
@@ -14,7 +14,7 @@
       <p class="text-gray-600 mb-8">Enter your email and password</p>
 
       <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="space-y-6">
-        <!-- Email input -->
+    
         <div class="space-y-2">
           <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
           <div class="relative">
@@ -37,7 +37,7 @@
           </div>
         </div>
 
-        <!-- Password input -->
+
         <div class="space-y-2">
           <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
           <div class="relative">
@@ -76,7 +76,7 @@
           </div>
         </div>
 
-        <!-- Remember me and Forgot password -->
+   
         <div class="flex items-center justify-between">
           <div class="flex items-center">
             <input
@@ -90,7 +90,7 @@
           <a href="#" class="text-sm text-green-600 hover:text-green-500">Forgot Password?</a>
         </div>
 
-        <!-- Login button -->
+ 
         <button
           type="submit"
           [disabled]="loginForm.invalid || (loading$ | async)"
@@ -100,7 +100,6 @@
           <span *ngIf="!(loading$ | async)">Login</span>
         </button>
 
-        <!-- Error message -->
         <div *ngIf="error$ | async as error" class="text-red-500 text-sm text-center">
           {{ error }}
         </div>

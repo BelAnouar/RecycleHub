@@ -1,1 +1,3 @@
-export type RequestStatus = 'pending' | 'occupied' | 'in-progress' | 'validated' | 'rejected';
+
+export type RequestStatus = 'pending' | 'completed' | 'rejected' | 'cancelled';
+

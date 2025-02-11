@@ -14,6 +14,10 @@ import {DashboardModule} from "./dashboard/dashboard.module";
 import {AuthModule} from "./auth/auth.module";
 import {HttpClientModule} from "@angular/common/http";
 import { DashboardEffects } from './store/dashboard.effects';
+import { PointsEffects } from './store/points.effects';
+import { CollectionEffects } from './store/collection.effects';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ToastrModule } from 'ngx-toastr';
 
 @NgModule({
   declarations: [
@@ -25,8 +29,10 @@ import { DashboardEffects } from './store/dashboard.effects';
     AppRoutingModule,
     AuthModule,
     DashboardModule,
+    BrowserAnimationsModule, 
+    ToastrModule.forRoot(),
     StoreModule.forRoot(reducers, { metaReducers }),
-    EffectsModule.forRoot([AuthEffects,DashboardEffects]),
+    EffectsModule.forRoot([AuthEffects,DashboardEffects,PointsEffects,CollectionEffects]),
 
     StoreDevtoolsModule.instrument({
       maxAge: 25,

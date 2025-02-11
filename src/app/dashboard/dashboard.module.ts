@@ -8,6 +8,7 @@ import { CollectionListComponent } from './collection-list/collection-list.compo
 import { PointsComponent } from './points/points.component';
 import { ProfileComponent } from './profile/profile.component';
 import { ReactiveFormsModule } from '@angular/forms';
+import { CollectorComponent } from './collector/collector.component';
 
 
 @NgModule({
@@ -16,7 +17,8 @@ import { ReactiveFormsModule } from '@angular/forms';
     CollectionRequestComponent,
     CollectionListComponent,
     PointsComponent,
-    ProfileComponent
+    ProfileComponent,
+    CollectorComponent
   ],
   imports: [
     CommonModule,

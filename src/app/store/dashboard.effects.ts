@@ -1,10 +1,12 @@
 
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { of } from 'rxjs';
+import { of, from } from 'rxjs';
 import { catchError, map, mergeMap } from 'rxjs/operators';
 import * as DashboardActions from './dashboard.actions';
 import { DashboardService } from '../services/dashboard.service';
+import { IndexDBService } from '../services/indexdb.service';
+import { TimeSlot } from '../models/time-slot.model';
 
 @Injectable()
 export class DashboardEffects {
@@ -12,8 +14,16 @@ export class DashboardEffects {
     this.actions$.pipe(
       ofType(DashboardActions.loadCollectionRequests),
       mergeMap(() =>
-        this.dashboardService.getCollectionRequests().pipe(
-          map(requests => DashboardActions.loadCollectionRequestsSuccess({ requests })),
+        from(this.indexDBService.getAllCollections()).pipe(
+          map(requests => {
+            const updatedRequests = requests.map(request => ({
+              ...request,
+              address:  '',
+              date:  new Date(),
+              timeSlot:  'defaultTimeSlot' as TimeSlot
+            }));
+            return DashboardActions.loadCollectionRequestsSuccess({ requests: updatedRequests });
+          }),
           catchError(error => of(DashboardActions.loadCollectionRequestsFailure({ error })))
         )
       )
@@ -31,15 +41,25 @@ export class DashboardEffects {
       )
     )
   );
+    addCollectionToIndexDB$ = createEffect(() =>
+      this.actions$.pipe(
+        ofType(DashboardActions.createCollectionRequestSuccess),
+        mergeMap(async ({ request }) => {
+          console.log('innnnnnn',request);
+          
+          await this.indexDBService.addCollection(request);
+          return DashboardActions.createCollectionRequestSuccess({ request });
+        })
+      )
+    );
 
   cancelCollectionRequest$ = createEffect(() =>
     this.actions$.pipe(
       ofType(DashboardActions.cancelCollectionRequest),
       mergeMap(({ requestId }) =>
-        this.dashboardService.cancelCollectionRequest(requestId).pipe(
-          map(() => DashboardActions.cancelCollectionRequestSuccess({ requestId })),
-          catchError(error => of(DashboardActions.cancelCollectionRequestFailure({ error })))
-        )
+       this.indexDBService.deleteCollection(requestId).then(() =>
+         DashboardActions.cancelCollectionRequestSuccess({ requestId })
+    ).catch(error => DashboardActions.cancelCollectionRequestFailure({ error }))
       )
     )
   );
@@ -56,21 +76,22 @@ export class DashboardEffects {
     )
   );
 
-  convertPoints$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(DashboardActions.convertPoints),
-      mergeMap(({ points }) =>
-        this.dashboardService.convertPoints(points).pipe(
-          map(voucher => DashboardActions.convertPointsSuccess({ points, voucher })),
-          catchError(error => of(DashboardActions.convertPointsFailure({ error })))
-        )
-      )
-    )
-  );
+  // convertPoints$ = createEffect(() =>
+  //   this.actions$.pipe(
+  //     ofType(DashboardActions.convertPoints),
+  //     mergeMap(({ points }) =>
+  //       this.dashboardService.convertPoints(points).pipe(
+  //         map(voucher => DashboardActions.convertPointsSuccess({ points, voucher })),
+  //         catchError(error => of(DashboardActions.convertPointsFailure({ error })))
+  //       )
+  //     )
+  //   )
+  // );
 
   constructor(
     private actions$: Actions,
-    private dashboardService: DashboardService
+    private dashboardService: DashboardService,
+        private indexDBService: IndexDBService
   ) {}
 }
 

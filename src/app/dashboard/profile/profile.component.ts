@@ -4,7 +4,7 @@ import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { User } from '../../models/user.model';
 import { AppState } from '../../store';
-import { deleteUserAccount, updateUserProfile } from '../../store/auth.actions';
+import { deleteUserAccount, loadUserProfileInformation, updateUserProfile } from '../../store/auth.actions';
 import * as AuthSelectors from "../../store/auth.selectors"
 
 @Component({
@@ -20,7 +20,7 @@ export class ProfileComponent implements OnInit {
     private fb: FormBuilder,
     private store: Store<AppState>
   ) {
-    this.user$ = this.store.select(AuthSelectors.selectUser);
+    this.user$ = this.store.select(AuthSelectors.selectUserProfile);
     this.profileForm = this.fb.group({
       name: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
@@ -31,8 +31,12 @@ export class ProfileComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.store.dispatch(loadUserProfileInformation());
+    
     this.user$.subscribe(user => {
       if (user) {
+    
+        
         this.profileForm.patchValue(user);
       }
     });

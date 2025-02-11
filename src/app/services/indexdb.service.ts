@@ -2,6 +2,8 @@ import { Injectable, PLATFORM_ID, Inject } from "@angular/core"
 import { openDB, type DBSchema, type IDBPDatabase } from "idb"
 import { environment } from "../../environments/environment"
 import { isPlatformBrowser } from "@angular/common"
+import { WasteType } from "../models/waste-type.model"
+import { RequestStatus } from "../models/request-status.model"
 
 interface RecycleHubDB extends DBSchema {
   users: {
@@ -13,6 +15,7 @@ interface RecycleHubDB extends DBSchema {
       password: string
       role: "user" | "collector"
       city?: string
+      points?: number
     }
     indexes: { "by-email": string }
   }
@@ -21,9 +24,9 @@ interface RecycleHubDB extends DBSchema {
     value: {
       id?: number
       userId: number
-      type: "plastic" | "glass" | "paper" | "metal"
+       wasteTypes: WasteType[];
       weight: number
-      status: "pending" | "occupied" | "in-progress" | "validated" | "rejected"
+    status: RequestStatus;
       collectorId?: number
     }
     indexes: { "by-user": number }
@@ -117,5 +120,15 @@ export class IndexDBService {
     const user = await this.db.getFromIndex("users", "by-email", email)
     return !!user
   }
+  async getAllCollections() {
+    await this.ensureDbConnection();
+    return this.db ? this.db.getAll('collections') : [];
+  }
+
+  async getUserById(id: number) {
+    await this.ensureDbConnection();
+    return this.db ? this.db.get('users', id) : null;
+  }
+
 }
 

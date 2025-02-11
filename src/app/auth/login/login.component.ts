@@ -5,6 +5,7 @@ import { Store} from "@ngrx/store";
 import { Observable } from 'rxjs';
 import type { State } from "../../store/auth.reducer"
 import { login } from '../../store/auth.actions';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-login',
@@ -20,6 +21,7 @@ export class LoginComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private store: Store<{ auth: State }>,
+        private toastr: ToastrService
   ) {
     this.loading$ = this.store.select((state) => state.auth.loading)
     this.error$ = this.store.select((state) => state.auth.error)
@@ -33,6 +35,9 @@ export class LoginComponent implements OnInit {
   onSubmit(): void {
     if (this.loginForm.valid) {
       this.store.dispatch(login(this.loginForm.value))
+
+      this.toastr.success('Registration successful!', 'Success');
+      this.loginForm.reset();
     }
   }
 

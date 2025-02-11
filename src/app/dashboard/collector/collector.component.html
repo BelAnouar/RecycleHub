@@ -1,0 +1,72 @@
+<div class="bg-white shadow overflow-hidden sm:rounded-lg" *ngIf="collectionRequest">
+    <div class="px-4 py-5 sm:px-6">
+      <h3 class="text-lg leading-6 font-medium text-gray-900">
+        Collection Request Verification
+      </h3>
+      <p class="mt-1 max-w-2xl text-sm text-gray-500">
+        Verify the materials and update the collection details.
+      </p>
+    </div>
+    <div class="border-t border-gray-200 px-4 py-5 sm:p-6">
+      <dl class="grid grid-cols-1 gap-x-4 gap-y-8 sm:grid-cols-2">
+        <div class="sm:col-span-1">
+          <dt class="text-sm font-medium text-gray-500">Request ID</dt>
+          <dd class="mt-1 text-sm text-gray-900">{{ collectionRequest.id }}</dd>
+        </div>
+        <div class="sm:col-span-1">
+          <dt class="text-sm font-medium text-gray-500">Status</dt>
+          <dd class="mt-1 text-sm text-gray-900">{{ collectionRequest.status | titlecase }}</dd>
+        </div>
+        <div class="sm:col-span-1">
+          <dt class="text-sm font-medium text-gray-500">Waste Types</dt>
+          <dd class="mt-1 text-sm text-gray-900">{{ collectionRequest.wasteTypes.join(', ') }}</dd>
+        </div>
+        <div class="sm:col-span-1">
+          <dt class="text-sm font-medium text-gray-500">Estimated Weight</dt>
+          <dd class="mt-1 text-sm text-gray-900">{{ collectionRequest.weight }} g</dd>
+        </div>
+        <div class="sm:col-span-2">
+          <dt class="text-sm font-medium text-gray-500">Collection Address</dt>
+          <dd class="mt-1 text-sm text-gray-900">{{ collectionRequest.address }}</dd>
+        </div>
+      </dl>
+    </div>
+    <div class="border-t border-gray-200 px-4 py-5 sm:p-6">
+      <form [formGroup]="verificationForm" (ngSubmit)="onSubmit()">
+        <div class="space-y-6">
+          <div>
+            <label for="actualWeight" class="block text-sm font-medium text-gray-700">Actual Weight (g)</label>
+            <input type="number" name="actualWeight" id="actualWeight" formControlName="actualWeight" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+            <div *ngIf="verificationForm.get('actualWeight')?.invalid && (verificationForm.get('actualWeight')?.dirty || verificationForm.get('actualWeight')?.touched)" class="text-red-500 text-xs mt-1">
+              <div *ngIf="verificationForm.get('actualWeight')?.errors?.['required']">Actual weight is required.</div>
+              <div *ngIf="verificationForm.get('actualWeight')?.errors?.['min']">Actual weight must be greater than 0.</div>
+            </div>
+          </div>
+          <div class="flex items-start">
+            <div class="flex items-center h-5">
+              <input id="materialsVerified" name="materialsVerified" type="checkbox" formControlName="materialsVerified" class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded">
+            </div>
+            <div class="ml-3 text-sm">
+              <label for="materialsVerified" class="font-medium text-gray-700">Materials Verified</label>
+              <p class="text-gray-500">I have verified that the waste types match the request.</p>
+            </div>
+          </div>
+          <div>
+            <label for="photos" class="block text-sm font-medium text-gray-700">Photos (optional)</label>
+            <input type="file" id="photos" name="photos" multiple (change)="onFileSelected($event)" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+          </div>
+          <div class="flex justify-between">
+            <button type="submit" [disabled]="!verificationForm.valid || loading" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+              {{ loading ? 'Validating...' : 'Validate Collection' }}
+            </button>
+            <button type="button" (click)="onReject()" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+              Reject Collection
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+    <div *ngIf="error" class="border-t border-red-200 px-4 py-3 bg-red-50 text-red-700">
+      {{ error }}
+    </div>
+  </div>

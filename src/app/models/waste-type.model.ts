@@ -1,1 +1,9 @@
-export type WasteType = 'plastic' | 'glass' | 'paper' | 'metal';
+
+export interface WasteType {
+
+    type: string;
+  
+    weight: number;
+  
+  }
+  
